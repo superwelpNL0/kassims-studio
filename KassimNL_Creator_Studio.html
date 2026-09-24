@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KassimNL Creator Studio</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme:dark;
+    --bg:#0d0e13; --bg2:#0a0b0f; --card:#15171f; --card2:#1a1d27; --border:#262a36;
+    --text:#e9e9ef; --muted:#8b8fa3; --accent:#7c5cff; --accent2:#22d3c5; --danger:#ff6b6b;
+  }
+  :root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+  html{ scroll-padding-top:env(safe-area-inset-top,0px); }
+  html,body{ height:100%; }
+  body{ background:var(--bg); color:var(--text); font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif; overflow-x:hidden; }
+  #app{ height:100%; }
+  h1,h2,h3,.font-display{ font-family:'Space Grotesk','Inter',system-ui,sans-serif; }
+  ::-webkit-scrollbar{width:8px;height:8px;} ::-webkit-scrollbar-thumb{background:#2a2e3a;border-radius:8px;}
+  :focus-visible{ outline:2px solid var(--accent2); outline-offset:2px; }
+  .card{background:var(--card); border:1px solid var(--border); border-radius:14px;}
+  .card2{background:var(--card2); border:1px solid var(--border); border-radius:12px;}
+  .btn-acc{background:linear-gradient(135deg,var(--accent),#5a3fd6); color:white; border-radius:10px; transition:.15s; border:none; cursor:pointer;}
+  .btn-acc:hover{filter:brightness(1.12); transform:translateY(-1px);}
+  .btn-acc:disabled{opacity:.6; cursor:wait; transform:none;}
+  .btn-ghost{background:var(--card2); border:1px solid var(--border); border-radius:10px; transition:.15s; color:var(--text); cursor:pointer;}
+  .btn-ghost:hover{background:#20232e; border-color:#343a48;}
+  .btn-danger{background:var(--danger); color:#1a0b0b; border-radius:10px; font-weight:600; border:none; cursor:pointer;}
+  .navitem{border-radius:10px; transition:.12s; color:var(--muted); text-decoration:none;}
+  .navitem:hover{background:#181b24; color:var(--text);}
+  .navitem.active{background:linear-gradient(135deg,rgba(124,92,255,.18),rgba(124,92,255,.05)); color:#fff; border:1px solid rgba(124,92,255,.35);}
+  .tag{font-size:11px; padding:2px 9px; border-radius:999px; border:1px solid var(--border); color:var(--muted); white-space:nowrap;}
+  .tag-sel{background:var(--accent) !important; color:#fff !important; border-color:var(--accent) !important;}
+  .kcol{background:#101219; border:1px solid var(--border); border-radius:14px; min-height:160px;}
+  .kcard{background:var(--card2); border:1px solid var(--border); border-radius:12px; cursor:grab; transition:.12s;}
+  .kcard:hover{border-color:#3a3f52; transform:translateY(-1px);}
+  .kcard.dragging{opacity:.35;}
+  .kcol.dragover{border-color:var(--accent); background:#141726;}
+  input,select,textarea{background:#0f1118; border:1px solid var(--border); border-radius:9px; color:var(--text); padding:8px 11px; font-size:14px; outline:none; width:100%;}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent);}
+  input[type=checkbox]{width:auto; padding:0; accent-color:var(--accent);}
+  input[type=file]{padding:6px;}
+  label{font-size:12px; color:var(--muted); margin-bottom:4px; display:block;}
+  .modal-bg{background:rgba(6,7,10,.72); backdrop-filter:blur(3px);}
+  .toast{background:var(--card2); border:1px solid var(--border); border-radius:11px; box-shadow:0 8px 30px rgba(0,0,0,.4);}
+  .fadein{animation:fadein .22s ease both;}
+  @keyframes fadein{from{opacity:0; transform:translateY(5px);} to{opacity:1; transform:translateY(0);}}
+  .empty{border:1.5px dashed var(--border); border-radius:14px;}
+  .seg{display:inline-flex; background:#0f1118; border:1px solid var(--border); border-radius:10px; padding:2px;}
+  .seg button{padding:5px 12px; font-size:12px; border-radius:8px; color:var(--muted); border:none; background:transparent; cursor:pointer;}
+  .seg button.on{background:var(--card2); color:var(--text);}
+  .seg button:disabled{opacity:.4; cursor:not-allowed;}
+  .bar{height:6px; border-radius:99px; background:#1c1f29; overflow:hidden;}
+  .bar>div{height:100%; border-radius:99px;}
+  .authpanel{background:
+      radial-gradient(900px 500px at 10% 0%, rgba(124,92,255,.28), transparent 60%),
+      radial-gradient(700px 500px at 100% 100%, rgba(34,211,197,.16), transparent 60%),
+      var(--bg2);}
+  .thumb{aspect-ratio:16/9; background:linear-gradient(135deg,#1d2030,#161824); border-radius:10px; overflow:hidden;}
+  .thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+  @media (max-width:768px){
+    .sidebar{position:fixed; left:0; top:0; bottom:0; z-index:400; transform:translateX(-100%); transition:.2s; padding-top:env(safe-area-inset-top,0px);}
+    .sidebar.open{transform:translateX(0);}
+  }
+  @media (prefers-reduced-motion:reduce){ .fadein{animation:none;} *{transition:none !important;} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ================= CONSTANTS ================= */
+const PLATFORMS=["Instagram","TikTok","YouTube","Twitch","Facebook","X","Anders"];
+const TYPES=["Reel","Video","Short","Foto","Story","Post","Livestream"];
+const STAGES=[["idee","💡 Idee"],["concept","✏️ Concept"],["klaar","✅ Klaar"],["gepland","📅 Gepland"],["gepubliceerd","🚀 Gepubliceerd"]];
+const IDEA_TAGS=["Gaming","Entertainment","Vlogs","Reizen","Twitch","Social media","Overig"];
+const PLAT_COLOR={Instagram:"#e1306c",TikTok:"#25f4ee",YouTube:"#ff3d3d",Twitch:"#9146ff",Facebook:"#3b82f6",X:"#e9e9ef",Anders:"#8b8fa3"};
+const TYPE_ICON={Reel:"🎞️",Video:"🎬",Short:"📱",Foto:"🖼️",Story:"⭕",Post:"📝",Livestream:"🔴"};
+/* f = hoofdcijfer (volgers / abonnees), s = betaalde subs of leden (alleen waar het bestaat) */
+const SOC={
+  Instagram:{f:"Volgers",s:null}, TikTok:{f:"Volgers",s:null}, YouTube:{f:"Abonnees",s:"Leden"},
+  Twitch:{f:"Volgers",s:"Subs"}, Facebook:{f:"Volgers",s:null}, X:{f:"Volgers",s:null}, Anders:{f:"Volgers",s:"Subs"}
+};
+const ICONS={dashboard:"🏠",ideeen:"💡",board:"🎬",agenda:"📅",mycontent:"🗂️",socials:"📈",fav:"❤️",stats:"📊",settings:"⚙️"};
+
+/* ================= HELPERS ================= */
+function uid(){return Math.random().toString(36).slice(2,10);}
+function isoLocal(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function dOff(off){ const x=new Date(); x.setDate(x.getDate()+off); return isoLocal(x); }
+function addDays(iso,n){ const d=new Date(iso+"T00:00:00"); d.setDate(d.getDate()+n); return isoLocal(d); }
+function daysBetween(a,b){ return Math.round((new Date(b+"T00:00:00")-new Date(a+"T00:00:00"))/86400000); }
+function fmtDate(iso){ if(!iso) return "—"; const d=new Date(iso+"T00:00:00"); return d.toLocaleDateString("nl-NL",{day:"numeric",month:"short"}); }
+function fmtN(n){ return (n==null||isNaN(n))?"—":Number(n).toLocaleString("nl-NL"); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function normUrl(u){ u=String(u||"").trim(); if(!u) return ""; if(!/^https?:\/\//i.test(u)) u="https://"+u; try{ const x=new URL(u); return /^https?:$/.test(x.protocol)?x.href:""; }catch(e){ return ""; } }
+function $(id){ return document.getElementById(id); }
+
+/* ================= STORAGE (works even when the browser blocks it) ================= */
+function backend(sess){ try{ const s=sess?sessionStorage:localStorage; s.setItem("__kst","1"); s.removeItem("__kst"); return s; }catch(e){ return null; } }
+const LS=backend(false), SS=backend(true), memL={}, memS={};
+const store={
+  get(k,sess){ const b=sess?SS:LS, m=sess?memS:memL; try{ return b? b.getItem(k) : (k in m? m[k]:null); }catch(e){ return null; } },
+  set(k,v,sess){ const b=sess?SS:LS, m=sess?memS:memL; if(!b){ m[k]=v; return true; } try{ b.setItem(k,v); return true; }catch(e){ return false; } },
+  del(k,sess){ const b=sess?SS:LS, m=sess?memS:memL; try{ if(b) b.removeItem(k); }catch(e){} delete m[k]; }
+};
+const USERS_KEY="kst_users", SESSION_KEY="kst_session", DATA_PREFIX="kst_data_";
+
+/* ================= ACCOUNTS ================= */
+const enc=new TextEncoder();
+const b64=buf=>btoa(String.fromCharCode(...new Uint8Array(buf)));
+const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+function newSalt(){ return b64(crypto.getRandomValues(new Uint8Array(16))); }
+async function hashPw(pw,salt){
+  const key=await crypto.subtle.importKey("raw",enc.encode(pw),"PBKDF2",false,["deriveBits"]);
+  const bits=await crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",salt:unb64(salt),iterations:150000},key,256);
+  return b64(bits);
+}
+function getUsers(){ try{ return JSON.parse(store.get(USERS_KEY)||"{}")||{}; }catch(e){ return {}; } }
+function putUsers(u){ return store.set(USERS_KEY,JSON.stringify(u)); }
+
+let CUR=null, S=null;
+let route="dashboard", search="", mobileOpen=false, saveWarned=false;
+let boardFilter={platform:"",type:"",stage:"",q:""};
+let mcFilter={platform:"",q:""};
+let favTab="content";
+let agendaOff=0;
+let chartState={metric:"f",range:90,acc:""};
+
+function newData(naam,handle){
+  return {v:2, profile:{naam:naam, gebruikersnaam:handle, defPlatform:"TikTok", defType:"Reel"},
+    ideas:[], content:[], myContent:[], social:{accounts:[],logs:[]}};
+}
+function loadData(k){
+  let d=null; try{ d=JSON.parse(store.get(DATA_PREFIX+k)||"null"); }catch(e){}
+  if(!d||typeof d!=="object") d=newData(k,k);
+  d.profile=Object.assign({naam:k,gebruikersnaam:k,defPlatform:"TikTok",defType:"Reel"},d.profile||{});
+  ["ideas","content","myContent"].forEach(x=>{ if(!Array.isArray(d[x])) d[x]=[]; });
+  if(!d.social||typeof d.social!=="object") d.social={accounts:[],logs:[]};
+  if(!Array.isArray(d.social.accounts)) d.social.accounts=[];
+  if(!Array.isArray(d.social.logs)) d.social.logs=[];
+  return d;
+}
+function save(){
+  if(!CUR||!S) return;
+  const ok=store.set(DATA_PREFIX+CUR,JSON.stringify(S));
+  if(!ok && !saveWarned){ saveWarned=true; toast("Opslaan is niet gelukt. De opslag van je browser is vol of geblokkeerd.","⚠️"); }
+}
+function enterApp(k){ CUR=k; S=loadData(k); route="dashboard"; search=""; mobileOpen=false; render(); }
+function logout(){
+  store.del(SESSION_KEY); store.del(SESSION_KEY,true);
+  CUR=null; S=null; closeModal(); renderAuth("login");
+}
+
+/* ================= AUTH SCREEN ================= */
+let authMode="login", lockUntil=0, fails=0;
+function renderAuth(mode){
+  authMode=mode||authMode;
+  const app=$("app"); app.className="";
+  const reg=authMode==="register";
+  app.innerHTML=`
+  <div class="h-full overflow-y-auto">
+   <div class="min-h-full grid md:grid-cols-2">
+    <section class="authpanel hidden md:flex flex-col justify-between p-10 lg:p-14">
+      <div>
+        <div class="font-display text-2xl font-bold">KassimNL <span style="color:var(--accent)">Studio</span></div>
+        <div class="text-sm mt-1" style="color:var(--muted)">Plan. Create. Publish.</div>
+      </div>
+      <div class="max-w-md">
+        <h2 class="font-display text-3xl lg:text-4xl font-bold leading-tight mb-5">Alles voor je content, op één plek.</h2>
+        <ul class="flex flex-col gap-3 text-sm" style="color:var(--muted)">
+          <li class="flex gap-3"><span>🎬</span><span><b style="color:var(--text)">Content Board</b><br>Van idee tot publicatie, met slepen en neerzetten.</span></li>
+          <li class="flex gap-3"><span>📅</span><span><b style="color:var(--text)">Agenda</b><br>Zie in één blik wat wanneer live gaat.</span></li>
+          <li class="flex gap-3"><span>📈</span><span><b style="color:var(--text)">Volgers Tracker</b><br>Houd je volgers en subs per platform bij en zie je groei.</span></li>
+        </ul>
+      </div>
+      <svg viewBox="0 0 420 90" class="w-full max-w-md" aria-hidden="true">
+        <defs><linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#22d3c5"/></linearGradient></defs>
+        <path d="M0 78 C40 74 60 60 95 62 S150 46 190 44 S250 52 285 34 S350 16 420 8" fill="none" stroke="url(#lg)" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="420" cy="8" r="4" fill="#22d3c5"/>
+      </svg>
+    </section>
+    <section class="flex items-center justify-center p-5 sm:p-8">
+      <div class="w-full max-w-sm fadein">
+        <div class="md:hidden mb-8 text-center">
+          <div class="font-display text-2xl font-bold">KassimNL <span style="color:var(--accent)">Studio</span></div>
+          <div class="text-xs mt-1" style="color:var(--muted)">Plan. Create. Publish.</div>
+        </div>
+        <div class="seg w-full mb-6">
+          <button type="button" class="flex-1 ${reg?'':'on'}" onclick="renderAuth('login')">Inloggen</button>
+          <button type="button" class="flex-1 ${reg?'on':''}" onclick="renderAuth('register')">Account maken</button>
+        </div>
+        <h1 class="font-display text-2xl font-bold mb-1">${reg?"Maak je account":"Welkom terug"}</h1>
+        <p class="text-sm mb-5" style="color:var(--muted)">${reg?"Kies een gebruikersnaam en wachtwoord om te starten.":"Log in om verder te gaan met je content."}</p>
+        <form onsubmit="doAuth(event)" class="flex flex-col gap-3" novalidate>
+          ${reg?`<div><label for="a_name">Naam</label><input id="a_name" autocomplete="name" placeholder="Kassim" maxlength="40"></div>`:""}
+          <div><label for="a_user">Gebruikersnaam</label><input id="a_user" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="kassimnl" maxlength="24"></div>
+          <div><label for="a_pw">Wachtwoord</label>
+            <div class="relative">
+              <input id="a_pw" type="password" autocomplete="${reg?'new-password':'current-password'}" placeholder="${reg?'Minimaal 8 tekens':'Je wachtwoord'}" style="padding-right:78px">
+              <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-xs px-2 py-1" style="color:var(--muted)" onclick="togglePw(this)">Tonen</button>
+            </div>
+          </div>
+          ${reg?`<div><label for="a_pw2">Herhaal wachtwoord</label><input id="a_pw2" type="password" autocomplete="new-password"></div>`:""}
+          <label class="flex items-center gap-2 text-sm cursor-pointer" style="color:var(--text); margin:2px 0 0">
+            <input type="checkbox" id="a_rem" checked> Blijf ingelogd op dit apparaat
+          </label>
+          <div id="autherr" role="alert" class="hidden text-sm rounded-lg px-3 py-2" style="background:rgba(255,107,107,.1); border:1px solid rgba(255,107,107,.35); color:#ff9b9b"></div>
+          <button id="authbtn" type="submit" class="btn-acc px-4 py-2.5 text-sm font-medium mt-1">${reg?"Account maken":"Inloggen"}</button>
+        </form>
+        <p class="text-xs mt-5" style="color:var(--muted)">Je account en gegevens worden alleen in deze browser bewaard. Op een ander apparaat begin je met een eigen account.</p>
+        ${LS?"":`<p class="text-xs mt-3" style="color:#ffb86b">Je browser blokkeert opslag. Je kunt inloggen, maar niets blijft bewaard nadat je de pagina sluit.</p>`}
+      </div>
+    </section>
+   </div>
+  </div>`;
+}
+function togglePw(btn){
+  const i=btn.parentElement.querySelector("input"); const show=i.type==="password";
+  i.type=show?"text":"password"; btn.textContent=show?"Verbergen":"Tonen";
+}
+async function doAuth(ev){
+  ev.preventDefault();
+  const err=$("autherr"), btn=$("authbtn"); const label=btn.textContent;
+  const showErr=m=>{ err.textContent=m; err.classList.remove("hidden"); };
+  err.classList.add("hidden");
+  if(!(window.crypto&&crypto.subtle)) return showErr("Inloggen werkt hier niet omdat je browser beveiligde functies blokkeert. Open de pagina via https.");
+  const user=$("a_user").value.trim().toLowerCase(), pw=$("a_pw").value, remember=$("a_rem").checked;
+  btn.disabled=true; btn.textContent="Bezig…";
+  try{
+    const users=getUsers();
+    if(authMode==="login"){
+      if(Date.now()<lockUntil) return showErr(`Te veel pogingen. Probeer het over ${Math.ceil((lockUntil-Date.now())/1000)} seconden opnieuw.`);
+      if(!user||!pw) return showErr("Vul je gebruikersnaam en wachtwoord in.");
+      const u=users[user]; let ok=false;
+      if(u) ok=(await hashPw(pw,u.salt))===u.hash;
+      if(!ok){ fails++; if(fails>=5){ lockUntil=Date.now()+30000; fails=0; } return showErr("Gebruikersnaam of wachtwoord klopt niet."); }
+      fails=0; setSession(user,remember); enterApp(user);
+    } else {
+      const naam=$("a_name").value.trim(), pw2=$("a_pw2").value;
+      if(!/^[a-z0-9_.]{3,24}$/.test(user)) return showErr("Gebruik 3 tot 24 tekens: letters, cijfers, punt of underscore.");
+      if(users[user]) return showErr("Deze gebruikersnaam is al in gebruik op dit apparaat.");
+      if(pw.length<8) return showErr("Je wachtwoord moet minimaal 8 tekens hebben.");
+      if(pw!==pw2) return showErr("De twee wachtwoorden zijn niet hetzelfde.");
+      const salt=newSalt(); const hash=await hashPw(pw,salt);
+      users[user]={username:user,salt,hash,created:dOff(0)};
+      if(!putUsers(users)) return showErr("Het account kon niet worden opgeslagen. Je browser blokkeert opslag.");
+      const d=newData(naam||user,user); store.set(DATA_PREFIX+user,JSON.stringify(d));
+      setSession(user,remember); enterApp(user); toast("Account aangemaakt. Welkom!","🎉");
+    }
+  } catch(e){ showErr("Er ging iets mis. Probeer het opnieuw."); }
+  finally{ if(btn.isConnected){ btn.disabled=false; btn.textContent=label; } }
+}
+function setSession(user,remember){
+  store.del(SESSION_KEY); store.del(SESSION_KEY,true);
+  store.set(SESSION_KEY,user,!remember);
+}
+
+/* ================= UI UTIL ================= */
+function toast(msg,icon){
+  let box=$("toastbox");
+  if(!box){ box=document.createElement("div"); box.id="toastbox"; box.className="fixed bottom-5 right-5 z-[999] flex flex-col gap-2 max-w-[90vw]"; box.setAttribute("aria-live","polite"); document.body.appendChild(box); }
+  const t=document.createElement("div");
+  t.className="toast fadein px-4 py-3 text-sm flex items-center gap-2";
+  t.innerHTML=`<span>${icon||"✅"}</span><span>${esc(msg)}</span>`;
+  box.appendChild(t);
+  setTimeout(()=>{ t.style.transition="opacity .3s"; t.style.opacity="0"; setTimeout(()=>t.remove(),300); },3000);
+}
+function openModal(html){
+  closeModal();
+  const bg=document.createElement("div");
+  bg.id="modalbg"; bg.className="fixed inset-0 modal-bg z-[500] flex items-center justify-center p-4";
+  bg.setAttribute("role","dialog"); bg.setAttribute("aria-modal","true");
+  bg.innerHTML=`<div class="card w-full max-w-lg max-h-[88vh] overflow-y-auto p-5 fadein" onclick="event.stopPropagation()">${html}</div>`;
+  bg.addEventListener("click",closeModal);
+  document.body.appendChild(bg);
+}
+function closeModal(){ const m=$("modalbg"); if(m) m.remove(); }
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
+let _confirmFn=null;
+function askConfirm(title,text,btn,fn){
+  _confirmFn=fn;
+  openModal(`<h3 class="font-display text-lg font-bold mb-2">${esc(title)}</h3>
+    <p class="text-sm mb-5" style="color:var(--muted)">${esc(text)}</p>
+    <div class="flex gap-2"><button onclick="runConfirm()" class="btn-danger px-4 py-2 text-sm flex-1">${esc(btn)}</button>
+    <button onclick="closeModal()" class="btn-ghost px-4 py-2 text-sm">Annuleren</button></div>`);
+}
+function runConfirm(){ const f=_confirmFn; _confirmFn=null; closeModal(); if(f) f(); }
+function stageLabel(k){ const f=STAGES.find(s=>s[0]===k); return f?f[1]:k; }
+function findContent(id){ return S.content.find(c=>c.id===id); }
+function emptyState(title,sub,btn,onclick){
+  return `<div class="empty p-8 text-center">
+    <div class="text-3xl mb-2">✨</div>
+    <div class="font-medium">${esc(title)}</div>
+    <div class="text-sm mb-4" style="color:var(--muted)">${esc(sub)}</div>
+    ${btn?`<button onclick="${onclick}" class="btn-acc px-4 py-2 text-sm">${esc(btn)}</button>`:""}
+  </div>`;
+}
+
+/* ================= SHELL ================= */
+function render(){
+  const app=$("app"); app.className="flex";
+  app.innerHTML=`
+    <div id="scrim" class="${mobileOpen?'':'hidden'} fixed inset-0 bg-black/60 z-[350] md:hidden" onclick="mobileOpen=false; render();"></div>
+    <aside class="sidebar ${mobileOpen?'open':''} w-64 shrink-0 h-full flex flex-col border-r" style="border-color:var(--border); background:var(--bg2)">
+      <div class="px-5 py-5 flex items-center justify-between">
+        <div>
+          <div class="font-display text-lg font-bold">KassimNL <span style="color:var(--accent)">Studio</span></div>
+          <div class="text-xs" style="color:var(--muted)">Plan. Create. Publish.</div>
+        </div>
+        <button class="md:hidden text-xl" style="color:var(--muted)" aria-label="Menu sluiten" onclick="mobileOpen=false; render();">✕</button>
+      </div>
+      <nav class="flex-1 px-3 flex flex-col gap-1 overflow-y-auto pb-3">
+        ${navItem("dashboard","Dashboard")}
+        ${navItem("ideeen","Ideeën")}
+        ${navItem("board","Content Board")}
+        ${navItem("agenda","Agenda")}
+        ${navItem("mycontent","Mijn Content")}
+        ${navItem("socials","Volgers Tracker")}
+        ${navItem("fav","Favorieten")}
+        ${navItem("stats","Statistieken")}
+        <div class="h-px my-2" style="background:var(--border)"></div>
+        ${navItem("settings","Instellingen")}
+      </nav>
+      <div class="p-3 border-t flex flex-col gap-2" style="border-color:var(--border)">
+        <div class="flex items-center gap-2 px-2 py-2 rounded-lg card2">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium shrink-0" style="background:var(--accent)">${esc((S.profile.naam||"?")[0].toUpperCase())}</div>
+          <div class="text-sm min-w-0">
+            <div class="font-medium truncate">${esc(S.profile.naam)}</div>
+            <div class="text-xs truncate" style="color:var(--muted)">@${esc(S.profile.gebruikersnaam)}</div>
+          </div>
+        </div>
+        <button onclick="logout()" class="btn-ghost px-3 py-2 text-xs">Uitloggen</button>
+      </div>
+    </aside>
+    <main class="flex-1 h-full overflow-y-auto min-w-0">
+      <header class="sticky top-0 z-20 flex items-center gap-3 px-4 md:px-6 py-3 border-b" style="background:rgba(13,14,19,.92); backdrop-filter:blur(6px); border-color:var(--border);">
+        <button class="md:hidden btn-ghost w-9 h-9 flex items-center justify-center shrink-0" aria-label="Menu openen" onclick="mobileOpen=true; render();">☰</button>
+        <div class="flex-1 max-w-md relative">
+          <input id="gsearch" placeholder="Zoek content, ideeën, mijn content..." value="${esc(search)}" oninput="search=this.value; renderPage();">
+          ${search ? searchResultsHTML() : ""}
+        </div>
+        <button aria-label="Meldingen" onclick="toast('Je hebt '+notifCount()+' geplande posts komende week.','🔔')" class="btn-ghost w-9 h-9 flex items-center justify-center relative shrink-0">
+          🔔${notifCount()>0?`<span class="absolute -top-1 -right-1 text-[10px] leading-none rounded-full px-1.5 py-0.5" style="background:var(--accent)">${notifCount()}</span>`:""}
+        </button>
+        <button onclick="openContentModal()" class="btn-acc px-4 py-2 text-sm font-medium hidden sm:block shrink-0">+ Nieuwe content</button>
+      </header>
+      <div id="pageroot" class="p-4 md:p-7 fadein"></div>
+    </main>
+  `;
+  renderPageInner();
+}
+function navItem(key,label){
+  return `<a href="#" class="navitem ${route===key?'active':''} px-3 py-2.5 text-sm cursor-pointer flex items-center gap-2 border border-transparent"
+    onclick="route='${key}'; mobileOpen=false; render(); return false;"><span>${ICONS[key]}</span><span>${label}</span></a>`;
+}
+function renderPage(){
+  const root=$("pageroot");
+  if(!root){ render(); return; }
+  renderPageInner();
+  const sr=$("gsearch")?.parentElement;
+  if(sr){ const ex=sr.querySelector("#searchresults"); if(ex) ex.remove(); if(search) sr.insertAdjacentHTML("beforeend",searchResultsHTML()); }
+}
+function renderPageInner(){
+  const pages={dashboard:pageDashboard,ideeen:pageIdeas,board:pageBoard,agenda:pageAgenda,mycontent:pageMyContent,socials:pageSocials,fav:pageFav,stats:pageStats,settings:pageSettings};
+  $("pageroot").innerHTML=(pages[route]||pageDashboard)();
+}
+function notifCount(){ return S.content.filter(c=>c.stage==="gepland" && c.date>=dOff(0) && c.date<=dOff(7)).length; }
+
+/* ================= SEARCH ================= */
+function searchResultsHTML(){
+  const q=search.toLowerCase();
+  const c=S.content.filter(x=>x.title.toLowerCase().includes(q)).slice(0,4);
+  const i=S.ideas.filter(x=>x.title.toLowerCase().includes(q)).slice(0,4);
+  const m=S.myContent.filter(x=>x.title.toLowerCase().includes(q)).slice(0,4);
+  if(!c.length && !i.length && !m.length) return `<div id="searchresults" class="absolute top-11 left-0 right-0 card p-3 text-sm" style="color:var(--muted)">Geen resultaten voor "${esc(search)}"</div>`;
+  const grp=(label,items,fn)=> items.length? `<div class="px-3 pt-2 pb-1 text-[11px]" style="color:var(--muted)">${label}</div>${items.map(fn).join("")}` : "";
+  return `<div id="searchresults" class="absolute top-11 left-0 right-0 card p-1 max-h-80 overflow-y-auto z-30">
+    ${grp("Content Board",c,x=>`<div class="px-3 py-2 rounded-lg hover:bg-white/5 cursor-pointer text-sm" onclick="search='';route='board';render();openContentModal('${x.id}')">🎬 ${esc(x.title)}</div>`)}
+    ${grp("Ideeën",i,x=>`<div class="px-3 py-2 rounded-lg hover:bg-white/5 cursor-pointer text-sm" onclick="search='';route='ideeen';render();">💡 ${esc(x.title)}</div>`)}
+    ${grp("Mijn Content",m,x=>`<div class="px-3 py-2 rounded-lg hover:bg-white/5 cursor-pointer text-sm" onclick="search='';route='mycontent';render();openMyContentModal('${x.id}')">🗂️ ${esc(x.title)}</div>`)}
+  </div>`;
+}
+
+/* ================= DASHBOARD ================= */
+function pageDashboard(){
+  const counts={}; STAGES.forEach(([k])=>counts[k]=S.content.filter(c=>c.stage===k).length);
+  const recent=[...S.content].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,4);
+  const upcoming=S.content.filter(c=>c.stage==="gepland").sort((a,b)=>a.date.localeCompare(b.date)).slice(0,4);
+  const hour=new Date().getHours();
+  const greet=hour<12?"Goedemorgen":hour<18?"Goedemiddag":"Goedenavond";
+  const accs=S.social.accounts, tf=totals("f");
+  return `
+  <h1 class="font-display text-2xl md:text-3xl font-bold mb-1">${greet}, ${esc(S.profile.naam)} 👋</h1>
+  <p class="mb-6" style="color:var(--muted)">Hier is een overzicht van je content en je groei.</p>
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
+    ${STAGES.map(([k,l])=>`<div class="card p-4"><div class="text-2xl font-display font-bold">${counts[k]}</div><div class="text-xs mt-1" style="color:var(--muted)">${l}</div></div>`).join("")}
+  </div>
+  <div class="grid md:grid-cols-3 gap-5 mb-5">
+    <div class="card p-4">
+      <div class="font-medium mb-1 text-sm">⚡ Snelle acties</div>
+      <div class="flex flex-col gap-2 mt-3">
+        <button onclick="openContentModal()" class="btn-acc px-3 py-2 text-sm text-left">+ Nieuwe content</button>
+        <button onclick="route='ideeen';render();openIdeaModal();" class="btn-ghost px-3 py-2 text-sm text-left">+ Nieuw idee</button>
+        <button onclick="route='agenda';render();" class="btn-ghost px-3 py-2 text-sm text-left">📅 Agenda openen</button>
+        <button onclick="${accs.length?'openLogModal()':'route=\'socials\';render();openAccountModal();'}" class="btn-ghost px-3 py-2 text-sm text-left">📈 ${accs.length?"Volgers bijwerken":"Social account toevoegen"}</button>
+      </div>
+    </div>
+    <div class="card p-4 md:col-span-2">
+      <div class="flex items-center justify-between mb-3">
+        <div class="font-medium text-sm">📈 Volgers &amp; subs</div>
+        <a href="#" class="text-xs" style="color:var(--accent2)" onclick="route='socials';render();return false;">Open tracker</a>
+      </div>
+      ${accs.length? `
+        <div class="flex items-end gap-6 mb-4 flex-wrap">
+          <div><div class="text-3xl font-display font-bold">${tf.n?fmtN(tf.sum):"—"}</div><div class="text-xs" style="color:var(--muted)">volgers in totaal</div></div>
+          <div><div class="text-lg font-display font-bold">${deltaTag(tf.g7)}</div><div class="text-xs" style="color:var(--muted)">afgelopen 7 dagen</div></div>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-2">
+          ${accs.slice(0,4).map(a=>{ const v=latestVal(a.id,"f"); return `<div class="card2 px-3 py-2 flex items-center gap-2 text-sm">
+            <span class="w-2 h-2 rounded-full shrink-0" style="background:${PLAT_COLOR[a.platform]||'#888'}"></span>
+            <span class="truncate flex-1">${esc(a.platform)}</span><span class="font-medium">${fmtN(v)}</span></div>`; }).join("")}
+        </div>`
+      : emptyState("Nog geen social accounts","Voeg je kanalen toe en volg je groei.","+ Account toevoegen","route='socials';render();openAccountModal();")}
+    </div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-5">
+    <div class="card p-4">
+      <div class="font-medium mb-3 text-sm">Recente content</div>
+      ${recent.length? `<div class="flex flex-col gap-2">${recent.map(contentRow).join("")}</div>` : emptyState("Nog geen content","Maak je eerste content-item aan.","+ Nieuwe content","openContentModal()")}
+    </div>
+    <div class="card p-4">
+      <div class="font-medium mb-3 text-sm">Eerstvolgende geplande content</div>
+      ${upcoming.length? `<div class="flex flex-col gap-2">${upcoming.map(contentRow).join("")}</div>` : emptyState("Niets gepland","Plan content in via het Content Board.","📅 Naar Agenda","route='agenda';render();")}
+    </div>
+  </div>`;
+}
+function contentRow(c){
+  return `<div class="card2 px-3 py-2.5 flex items-center gap-3 cursor-pointer" onclick="openContentModal('${c.id}')">
+    <span class="w-2 h-2 rounded-full shrink-0" style="background:${PLAT_COLOR[c.platform]||'#888'}"></span>
+    <div class="min-w-0 flex-1">
+      <div class="text-sm font-medium truncate">${esc(c.title)}</div>
+      <div class="text-xs" style="color:var(--muted)">${esc(c.platform)} · ${esc(c.type)} · ${fmtDate(c.date)}</div>
+    </div>
+    <span class="tag">${stageLabel(c.stage)}</span>
+  </div>`;
+}
+
+/* ================= IDEAS ================= */
+function pageIdeas(){
+  return `
+  <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+    <h1 class="font-display text-2xl font-bold">💡 Ideeën</h1>
+    <button onclick="openIdeaModal()" class="btn-acc px-4 py-2 text-sm">+ Idee toevoegen</button>
+  </div>
+  ${S.ideas.length? `<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">${S.ideas.map(ideaCard).join("")}</div>`
+    : emptyState("Nog geen ideeën","Sla snel een nieuw idee op voordat je het vergeet.","+ Idee toevoegen","openIdeaModal()")}`;
+}
+function ideaCard(i){
+  return `<div class="card p-4 flex flex-col gap-3">
+    <div class="flex items-start justify-between gap-2">
+      <div class="font-medium">${esc(i.title)}</div>
+      <button aria-label="Favoriet" onclick="toggleIdeaFav('${i.id}')" class="text-lg shrink-0">${i.fav?"❤️":"🤍"}</button>
+    </div>
+    <div class="text-sm" style="color:var(--muted)">${esc(i.desc||"")}</div>
+    <div class="flex flex-wrap gap-1.5">
+      <span class="tag" style="border-color:${PLAT_COLOR[i.platform]||'#262a36'}55">${esc(i.platform)}</span>
+      <span class="tag">${esc(i.type)}</span>
+      ${(i.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}
+    </div>
+    <div class="text-xs" style="color:var(--muted)">Aangemaakt ${fmtDate(i.created)}</div>
+    <div class="flex gap-2 mt-1">
+      <button onclick="ideaToBoard('${i.id}')" class="btn-acc px-3 py-1.5 text-xs flex-1">Naar Content Board</button>
+      <button onclick="openIdeaModal('${i.id}')" class="btn-ghost px-3 py-1.5 text-xs">Bewerken</button>
+      <button onclick="deleteIdea('${i.id}')" class="btn-ghost px-3 py-1.5 text-xs" style="color:var(--danger)">Verwijderen</button>
+    </div>
+  </div>`;
+}
+function openIdeaModal(id){
+  const idea = id ? S.ideas.find(x=>x.id===id) : {title:"",desc:"",platform:S.profile.defPlatform,type:S.profile.defType,tags:[]};
+  openModal(`
+    <h3 class="font-display text-lg font-bold mb-4">${id?"Idee bewerken":"Nieuw idee"}</h3>
+    <div class="flex flex-col gap-3">
+      <div><label>Titel</label><input id="f_title" value="${esc(idea.title)}"></div>
+      <div><label>Korte omschrijving</label><textarea id="f_desc" rows="2">${esc(idea.desc)}</textarea></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label>Platform</label><select id="f_platform">${PLATFORMS.map(p=>`<option ${p===idea.platform?"selected":""}>${p}</option>`).join("")}</select></div>
+        <div><label>Contenttype</label><select id="f_type">${TYPES.map(t=>`<option ${t===idea.type?"selected":""}>${t}</option>`).join("")}</select></div>
+      </div>
+      <div><label>Tags</label>
+        <div class="flex flex-wrap gap-1.5" id="f_tags">
+          ${IDEA_TAGS.map(t=>`<span class="tag cursor-pointer ${(idea.tags||[]).includes(t)?'tag-sel':''}" data-tag="${t}" onclick="this.classList.toggle('tag-sel')">${t}</span>`).join("")}
+        </div>
+      </div>
+      <div class="flex gap-2 mt-2">
+        <button onclick="saveIdea(${id?`'${id}'`:null})" class="btn-acc px-4 py-2 text-sm flex-1">Opslaan</button>
+        <button onclick="closeModal()" class="btn-ghost px-4 py-2 text-sm">Annuleren</button>
+      </div>
+    </div>`);
+}
+function saveIdea(id){
+  const tags=[...document.querySelectorAll('#f_tags .tag-sel')].map(e=>e.dataset.tag);
+  const data={title:$("f_title").value.trim()||"Zonder titel", desc:$("f_desc").value, platform:$("f_platform").value, type:$("f_type").value, tags};
+  if(id){ Object.assign(S.ideas.find(x=>x.id===id),data); toast("Idee bijgewerkt"); }
+  else { S.ideas.unshift({id:uid(),created:dOff(0),fav:false,...data}); toast("Idee opgeslagen","💡"); }
+  save(); closeModal(); renderPage();
+}
+function deleteIdea(id){ S.ideas=S.ideas.filter(x=>x.id!==id); save(); toast("Idee verwijderd","🗑️"); renderPage(); }
+function toggleIdeaFav(id){ const i=S.ideas.find(x=>x.id===id); i.fav=!i.fav; save(); renderPage(); }
+function ideaToBoard(id){
+  const i=S.ideas.find(x=>x.id===id); if(!i) return;
+  S.content.unshift({id:uid(),title:i.title,platform:i.platform,type:i.type,stage:"idee",desc:i.desc,caption:"",hashtags:"",date:dOff(3),time:"12:00",notes:"",fav:false});
+  save(); toast("Idee omgezet naar content","🎬"); route="board"; render();
+}
+
+/* ================= CONTENT BOARD ================= */
+function pageBoard(){
+  const q=boardFilter.q.toLowerCase();
+  const items=S.content.filter(c =>
+    (!boardFilter.platform || c.platform===boardFilter.platform) &&
+    (!boardFilter.type || c.type===boardFilter.type) &&
+    (!q || c.title.toLowerCase().includes(q)));
+  return `
+  <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+    <h1 class="font-display text-2xl font-bold">🎬 Content Board</h1>
+    <button onclick="openContentModal()" class="btn-acc px-4 py-2 text-sm">+ Nieuwe content</button>
+  </div>
+  <div class="flex flex-wrap gap-2 mb-5">
+    <input placeholder="Zoeken..." value="${esc(boardFilter.q)}" oninput="boardFilter.q=this.value; renderPage();" class="max-w-[180px]">
+    <select onchange="boardFilter.platform=this.value; renderPage();" class="max-w-[160px]">
+      <option value="">Alle platforms</option>${PLATFORMS.map(p=>`<option ${boardFilter.platform===p?"selected":""}>${p}</option>`).join("")}
+    </select>
+    <select onchange="boardFilter.type=this.value; renderPage();" class="max-w-[160px]">
+      <option value="">Alle types</option>${TYPES.map(t=>`<option ${boardFilter.type===t?"selected":""}>${t}</option>`).join("")}
+    </select>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-5 gap-4 overflow-x-auto">
+    ${STAGES.map(([key,label])=>{
+      const colItems=items.filter(c=>c.stage===key);
+      return `<div class="kcol p-3" data-stage="${key}" ondragover="event.preventDefault(); this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="dropCard(event,'${key}')">
+        <div class="flex items-center justify-between mb-3 px-1">
+          <span class="text-sm font-medium">${label}</span>
+          <span class="text-xs" style="color:var(--muted)">${colItems.length}</span>
+        </div>
+        <div class="flex flex-col gap-2 min-h-[60px]">
+          ${colItems.map(kanbanCard).join("") || `<div class="text-xs text-center py-6" style="color:var(--muted)">Sleep kaarten hierheen</div>`}
+        </div>
+      </div>`;
+    }).join("")}
+  </div>`;
+}
+function kanbanCard(c){
+  return `<div class="kcard p-3" draggable="true" ondragstart="event.dataTransfer.setData('id','${c.id}'); this.classList.add('dragging')" ondragend="this.classList.remove('dragging')" onclick="openContentModal('${c.id}')">
+    <div class="flex items-start justify-between gap-2 mb-1.5">
+      <span class="w-2 h-2 rounded-full mt-1.5 shrink-0" style="background:${PLAT_COLOR[c.platform]||'#888'}"></span>
+      <div class="text-sm font-medium flex-1 min-w-0 truncate">${esc(c.title)}</div>
+      ${c.fav?'<span class="text-xs">❤️</span>':''}
+    </div>
+    <div class="text-xs mb-2" style="color:var(--muted)">${esc(c.platform)} · ${esc(c.type)}</div>
+    <div class="text-xs" style="color:var(--muted)">📅 ${fmtDate(c.date)}</div>
+  </div>`;
+}
+function dropCard(ev,stage){
+  ev.preventDefault(); ev.currentTarget.classList.remove("dragover");
+  const c=findContent(ev.dataTransfer.getData("id")); if(!c) return;
+  c.stage=stage; save();
+  toast(`Verplaatst naar ${stageLabel(stage)}`, stage==="gepubliceerd"?"🚀":"✅");
+  renderPage();
+}
+function openContentModal(id){
+  const c = id ? findContent(id) : {title:"",platform:S.profile.defPlatform,type:S.profile.defType,stage:"idee",desc:"",caption:"",hashtags:"",date:dOff(3),time:"12:00",notes:"",fav:false};
+  if(!c) return;
+  openModal(`
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-display text-lg font-bold">${id?"Content bewerken":"Nieuwe content"}</h3>
+      ${id?`<button onclick="askConfirm('Content verwijderen?','Dit kan niet ongedaan worden gemaakt.','Verwijderen',()=>deleteContent('${id}'))" class="text-xs" style="color:var(--danger)">Verwijderen</button>`:""}
+    </div>
+    <div class="flex flex-col gap-3">
+      <div><label>Titel</label><input id="c_title" value="${esc(c.title)}"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label>Platform</label><select id="c_platform">${PLATFORMS.map(p=>`<option ${p===c.platform?"selected":""}>${p}</option>`).join("")}</select></div>
+        <div><label>Contenttype</label><select id="c_type">${TYPES.map(t=>`<option ${t===c.type?"selected":""}>${t}</option>`).join("")}</select></div>
+      </div>
+      <div><label>Beschrijving</label><textarea id="c_desc" rows="2">${esc(c.desc)}</textarea></div>
+      <div><label>Caption</label><textarea id="c_caption" rows="2">${esc(c.caption)}</textarea></div>
+      <div><label>Hashtags</label><input id="c_hashtags" value="${esc(c.hashtags)}" placeholder="#fyp #reel"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label>Publicatiedatum</label><input type="date" id="c_date" value="${esc(c.date)}"></div>
+        <div><label>Publicatietijd</label><input type="time" id="c_time" value="${esc(c.time)}"></div>
+      </div>
+      <div><label>Notities</label><textarea id="c_notes" rows="2">${esc(c.notes)}</textarea></div>
+      <label class="flex items-center gap-2 text-sm cursor-pointer" style="color:var(--text)"><input type="checkbox" id="c_fav" ${c.fav?"checked":""}> ❤️ Favoriet</label>
+      <div class="grid grid-cols-2 gap-2 mt-1">
+        <button onclick="saveContent(${id?`'${id}'`:null},'concept')" class="btn-ghost px-3 py-2 text-sm">Opslaan als concept</button>
+        <button onclick="saveContent(${id?`'${id}'`:null},'klaar')" class="btn-ghost px-3 py-2 text-sm">Markeer als klaar</button>
+        <button onclick="saveContent(${id?`'${id}'`:null},'gepland')" class="btn-acc px-3 py-2 text-sm">Inplannen</button>
+        <button onclick="saveContent(${id?`'${id}'`:null},'gepubliceerd')" class="btn-acc px-3 py-2 text-sm" style="background:linear-gradient(135deg,var(--accent2),#0ea89c)">Publiceren</button>
+      </div>
+    </div>`);
+}
+function saveContent(id,stage){
+  const data={
+    title:$("c_title").value.trim()||"Zonder titel", platform:$("c_platform").value, type:$("c_type").value,
+    desc:$("c_desc").value, caption:$("c_caption").value, hashtags:$("c_hashtags").value,
+    date:$("c_date").value||dOff(0), time:$("c_time").value||"12:00", notes:$("c_notes").value, fav:$("c_fav").checked, stage
+  };
+  if(id){ Object.assign(findContent(id),data); } else { S.content.unshift({id:uid(),...data}); }
+  save(); closeModal();
+  toast(stage==="gepubliceerd"?"Content gepubliceerd 🚀": stage==="gepland"?"Content ingepland 📅": stage==="klaar"?"Gemarkeerd als klaar ✅":"Opgeslagen als concept");
+  renderPage();
+}
+function deleteContent(id){ S.content=S.content.filter(x=>x.id!==id); save(); toast("Content verwijderd","🗑️"); renderPage(); }
+
+/* ================= AGENDA ================= */
+function pageAgenda(){
+  const byDate={};
+  S.content.filter(c=>c.stage==="gepland"||c.stage==="gepubliceerd").forEach(c=>{ (byDate[c.date]=byDate[c.date]||[]).push(c); });
+  const dates=Object.keys(byDate).sort();
+  const now=new Date(); const view=new Date(now.getFullYear(),now.getMonth()+agendaOff,1);
+  const startDay=(view.getDay()+6)%7;
+  const daysInMonth=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
+  let cells="";
+  for(let i=0;i<startDay;i++) cells+=`<div></div>`;
+  for(let d=1; d<=daysInMonth; d++){
+    const iso=`${view.getFullYear()}-${String(view.getMonth()+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const items=byDate[iso]||[]; const isToday=iso===dOff(0);
+    cells+=`<div class="card2 p-1.5 min-h-[64px] text-xs" style="${isToday?'border-color:var(--accent)':''}">
+      <div class="mb-1" style="color:${isToday?'var(--accent)':'var(--muted)'}">${d}</div>
+      ${items.slice(0,2).map(c=>`<div onclick="openContentModal('${c.id}')" class="truncate rounded px-1 mb-0.5 cursor-pointer" style="background:${PLAT_COLOR[c.platform]||'#888'}22; color:${PLAT_COLOR[c.platform]||'#888'}">${esc(c.title)}</div>`).join("")}
+      ${items.length>2?`<div style="color:var(--muted)">+${items.length-2} meer</div>`:""}
+    </div>`;
+  }
+  const upcoming=dates.filter(d=>d>=dOff(0)).slice(0,8);
+  return `
+  <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+    <h1 class="font-display text-2xl font-bold">📅 Content Agenda</h1>
+    <button onclick="openContentModal()" class="btn-acc px-4 py-2 text-sm">+ Content plannen</button>
+  </div>
+  <div class="card p-4 mb-6">
+    <div class="flex items-center justify-between mb-3">
+      <div class="text-sm font-medium">${view.toLocaleDateString("nl-NL",{month:"long",year:"numeric"})}</div>
+      <div class="flex gap-1.5">
+        <button aria-label="Vorige maand" class="btn-ghost w-8 h-8" onclick="agendaOff--;renderPage();">‹</button>
+        <button class="btn-ghost px-3 h-8 text-xs" onclick="agendaOff=0;renderPage();">Vandaag</button>
+        <button aria-label="Volgende maand" class="btn-ghost w-8 h-8" onclick="agendaOff++;renderPage();">›</button>
+      </div>
+    </div>
+    <div class="grid grid-cols-7 gap-1.5 text-center text-[11px] mb-1" style="color:var(--muted)">${["Ma","Di","Wo","Do","Vr","Za","Zo"].map(d=>`<div>${d}</div>`).join("")}</div>
+    <div class="grid grid-cols-7 gap-1.5">${cells}</div>
+  </div>
+  <div class="card p-4">
+    <div class="text-sm font-medium mb-3">Aankomend</div>
+    ${upcoming.length? upcoming.map(d=>`
+      <div class="mb-3">
+        <div class="text-xs mb-1" style="color:var(--muted)">${fmtDate(d)}</div>
+        <div class="flex flex-col gap-1.5">${byDate[d].map(contentRow).join("")}</div>
+      </div>`).join("") : emptyState("Geen geplande content","Plan content in vanuit het Content Board.","+ Content plannen","openContentModal()")}
+  </div>`;
+}
+
+/* ================= MIJN CONTENT ================= */
+let mcThumb=null;
+function pageMyContent(){
+  const q=mcFilter.q.toLowerCase();
+  const items=S.myContent.filter(x=>(!mcFilter.platform||x.platform===mcFilter.platform)&&(!q||x.title.toLowerCase().includes(q)));
+  return `
+  <div class="flex items-center justify-between mb-2 flex-wrap gap-3">
+    <h1 class="font-display text-2xl font-bold">🗂️ Mijn Content</h1>
+    <button onclick="openMyContentModal()" class="btn-acc px-4 py-2 text-sm">+ Content toevoegen</button>
+  </div>
+  <p class="mb-5 text-sm" style="color:var(--muted)">Je eigen video's, foto's en posts op één plek, met link en voorbeeldafbeelding.</p>
+  ${S.myContent.length? `
+    <div class="flex flex-wrap gap-2 mb-5">
+      <input placeholder="Zoeken..." value="${esc(mcFilter.q)}" oninput="mcFilter.q=this.value; renderPage();" class="max-w-[180px]">
+      <select onchange="mcFilter.platform=this.value; renderPage();" class="max-w-[160px]">
+        <option value="">Alle platforms</option>${PLATFORMS.map(p=>`<option ${mcFilter.platform===p?"selected":""}>${p}</option>`).join("")}
+      </select>
+    </div>
+    ${items.length? `<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">${items.map(myContentCard).join("")}</div>` : emptyState("Niets gevonden","Pas je zoekopdracht of filter aan.",null,null)}`
+  : emptyState("Nog geen eigen content","Bewaar hier je video's, foto's en posts, met een link en voorbeeldafbeelding.","+ Content toevoegen","openMyContentModal()")}`;
+}
+function myContentCard(m){
+  const url=normUrl(m.url);
+  return `<div class="card p-3 flex flex-col gap-3">
+    <div class="thumb flex items-center justify-center text-4xl">${m.thumb?`<img src="${esc(m.thumb)}" alt="">`:(TYPE_ICON[m.type]||"🎬")}</div>
+    <div class="px-1">
+      <div class="flex items-start justify-between gap-2">
+        <div class="font-medium text-sm">${esc(m.title)}</div>
+        <button aria-label="Favoriet" onclick="toggleMcFav('${m.id}')" class="text-lg shrink-0 leading-none">${m.fav?"❤️":"🤍"}</button>
+      </div>
+      <div class="text-xs mt-1" style="color:var(--muted)">${esc(m.platform)} · ${esc(m.type)} · ${fmtDate(m.created)}</div>
+      ${m.notes?`<div class="text-xs mt-2" style="color:var(--muted)">${esc(m.notes)}</div>`:""}
+    </div>
+    <div class="flex gap-2 mt-auto">
+      ${url?`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer" class="btn-ghost px-3 py-1.5 text-xs flex-1 text-center">Openen ↗</a>`:""}
+      <button onclick="mcToBoard('${m.id}')" class="btn-acc px-3 py-1.5 text-xs flex-1">Inplannen</button>
+      <button onclick="openMyContentModal('${m.id}')" class="btn-ghost px-3 py-1.5 text-xs">Bewerken</button>
+    </div>
+  </div>`;
+}
+function openMyContentModal(id){
+  const m = id ? S.myContent.find(x=>x.id===id) : {title:"",platform:S.profile.defPlatform,type:S.profile.defType,url:"",notes:"",thumb:null};
+  if(!m) return;
+  mcThumb=m.thumb||null;
+  openModal(`
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-display text-lg font-bold">${id?"Content bewerken":"Content toevoegen"}</h3>
+      ${id?`<button onclick="askConfirm('Verwijderen uit Mijn Content?','Dit kan niet ongedaan worden gemaakt.','Verwijderen',()=>deleteMyContent('${id}'))" class="text-xs" style="color:var(--danger)">Verwijderen</button>`:""}
+    </div>
+    <div class="flex flex-col gap-3">
+      <div><label>Titel</label><input id="mc_title" value="${esc(m.title)}"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label>Platform</label><select id="mc_platform">${PLATFORMS.map(p=>`<option ${p===m.platform?"selected":""}>${p}</option>`).join("")}</select></div>
+        <div><label>Contenttype</label><select id="mc_type">${TYPES.map(t=>`<option ${t===m.type?"selected":""}>${t}</option>`).join("")}</select></div>
+      </div>
+      <div><label>Link naar de post of video</label><input id="mc_url" value="${esc(m.url)}" placeholder="https://..." inputmode="url" autocapitalize="none"></div>
+      <div><label>Notities</label><textarea id="mc_notes" rows="2">${esc(m.notes)}</textarea></div>
+      <div><label>Voorbeeldafbeelding (optioneel)</label>
+        <div class="thumb flex items-center justify-center text-xs mb-2" id="mc_prev" style="color:var(--muted)">${mcThumb?`<img src="${esc(mcThumb)}" alt="">`:"Geen afbeelding gekozen"}</div>
+        <input type="file" id="mc_file" accept="image/*" onchange="pickThumb(this)">
+      </div>
+      <div class="flex gap-2 mt-2">
+        <button onclick="saveMyContent(${id?`'${id}'`:null})" class="btn-acc px-4 py-2 text-sm flex-1">Opslaan</button>
+        <button onclick="closeModal()" class="btn-ghost px-4 py-2 text-sm">Annuleren</button>
+      </div>
+    </div>`);
+}
+function readThumb(file){
+  return new Promise((res,rej)=>{
+    const fr=new FileReader();
+    fr.onerror=rej;
+    fr.onload=()=>{ const img=new Image(); img.onerror=rej;
+      img.onload=()=>{ const sc=Math.min(1,480/Math.max(img.width,img.height)); const c=document.createElement("canvas");
+        c.width=Math.max(1,Math.round(img.width*sc)); c.height=Math.max(1,Math.round(img.height*sc));
+        c.getContext("2d").drawImage(img,0,0,c.width,c.height); res(c.toDataURL("image/jpeg",0.75)); };
+      img.src=fr.result; };
+    fr.readAsDataURL(file);
+  });
+}
+async function pickThumb(inp){
+  const f=inp.files[0]; if(!f) return;
+  try{ mcThumb=await readThumb(f); const p=$("mc_prev"); if(p) p.innerHTML=`<img src="${mcThumb}" alt="">`; }
+  catch(e){ toast("Deze afbeelding kan niet worden gelezen","⚠️"); }
+}
+function saveMyContent(id){
+  const rawUrl=$("mc_url").value.trim(); const url=normUrl(rawUrl);
+  if(rawUrl && !url){ toast("Deze link is niet geldig","⚠️"); return; }
+  const data={title:$("mc_title").value.trim()||"Zonder titel", platform:$("mc_platform").value, type:$("mc_type").value, url, notes:$("mc_notes").value, thumb:mcThumb};
+  if(id){ Object.assign(S.myContent.find(x=>x.id===id),data); toast("Content bijgewerkt"); }
+  else { S.myContent.unshift({id:uid(),created:dOff(0),fav:false,...data}); toast("Toegevoegd aan Mijn Content","🗂️"); }
+  save(); closeModal(); renderPage();
+}
+function deleteMyContent(id){ S.myContent=S.myContent.filter(x=>x.id!==id); save(); toast("Verwijderd uit Mijn Content","🗑️"); renderPage(); }
+function toggleMcFav(id){ const m=S.myContent.find(x=>x.id===id); m.fav=!m.fav; save(); renderPage(); }
+function mcToBoard(id){
+  const m=S.myContent.find(x=>x.id===id); if(!m) return;
+  S.content.unshift({id:uid(),title:m.title,platform:m.platform,type:m.type,stage:"concept",desc:m.notes||"",caption:"",hashtags:"",date:dOff(3),time:"12:00",notes:m.url?("Bron: "+m.url):"",fav:false});
+  save(); toast("Toegevoegd aan het Content Board","🎬"); route="board"; render();
+}
+
+/* ================= VOLGERS TRACKER ================= */
+function accLogs(id){ return S.social.logs.filter(l=>l.acc===id).sort((a,b)=>a.date.localeCompare(b.date)); }
+function latest(id){ const l=accLogs(id); return l[l.length-1]||null; }
+function latestVal(id,m){ const l=accLogs(id).filter(x=>x[m]!=null); return l.length? l[l.length-1][m] : null; }
+function growth(id,days,m){
+  const l=accLogs(id).filter(x=>x[m]!=null); if(l.length<2) return null;
+  const last=l[l.length-1], cutoff=addDays(last.date,-days);
+  let ref=null; for(const x of l){ if(x.date<=cutoff) ref=x; }
+  if(!ref) ref=l[0];
+  if(ref===last) return null;
+  return last[m]-ref[m];
+}
+function totals(m){
+  let sum=0,n=0,g7=0,g30=0,h7=false,h30=false;
+  S.social.accounts.forEach(a=>{
+    const v=latestVal(a.id,m); if(v==null) return; sum+=v; n++;
+    const a7=growth(a.id,7,m), a30=growth(a.id,30,m);
+    if(a7!=null){ g7+=a7; h7=true; } if(a30!=null){ g30+=a30; h30=true; }
+  });
+  return {sum,n,g7:h7?g7:null,g30:h30?g30:null};
+}
+function deltaTag(v){
+  if(v==null) return `<span style="color:var(--muted)">—</span>`;
+  const col=v>0?"var(--accent2)":v<0?"var(--danger)":"var(--muted)";
+  const txt=v>0?"+"+fmtN(v):v<0?"−"+fmtN(Math.abs(v)):"±0";
+  return `<span style="color:${col}">${txt}</span>`;
+}
+function accName(a){ return `${a.platform}${a.handle?" @"+a.handle:""}`; }
+function goalBar(label,val,goal,col){
+  if(!goal||val==null) return "";
+  const pct=Math.min(100,Math.round(val/goal*100));
+  return `<div class="mt-3"><div class="flex justify-between text-xs mb-1" style="color:var(--muted)"><span>Doel ${esc(label)}: ${fmtN(goal)}</span><span>${pct}%</span></div>
+    <div class="bar"><div style="width:${pct}%; background:${col}"></div></div></div>`;
+}
+function pageSocials(){
+  const accs=S.social.accounts;
+  const head=`<div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+    <h1 class="font-display text-2xl font-bold">📈 Volgers Tracker</h1>
+    <div class="flex gap-2">
+      ${accs.length?`<button onclick="openLogModal()" class="btn-acc px-4 py-2 text-sm">+ Stand invoeren</button>`:""}
+      <button onclick="openAccountModal()" class="${accs.length?'btn-ghost':'btn-acc'} px-4 py-2 text-sm">+ Account toevoegen</button>
+    </div></div>`;
+  if(!accs.length) return head+emptyState("Nog geen accounts","Voeg je kanalen toe, voer je aantallen in en zie hoe je groeit.","+ Account toevoegen","openAccountModal()");
+  const tf=totals("f"), ts=totals("s");
+  const logs=[...S.social.logs].sort((a,b)=>b.date.localeCompare(a.date)||0).slice(0,15);
+  const hasSubs=accs.some(a=>SOC[a.platform].s);
+  if(!hasSubs && chartState.metric==="s") chartState.metric="f";
+  if(chartState.acc && !accs.find(a=>a.id===chartState.acc)) chartState.acc="";
+  return head+`
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+    <div class="card p-4"><div class="text-2xl font-display font-bold">${tf.n?fmtN(tf.sum):"—"}</div><div class="text-xs mt-1" style="color:var(--muted)">Volgers &amp; abonnees</div></div>
+    <div class="card p-4"><div class="text-2xl font-display font-bold">${ts.n?fmtN(ts.sum):"—"}</div><div class="text-xs mt-1" style="color:var(--muted)">Subs &amp; leden</div></div>
+    <div class="card p-4"><div class="text-2xl font-display font-bold">${deltaTag(tf.g7)}</div><div class="text-xs mt-1" style="color:var(--muted)">Groei 7 dagen</div></div>
+    <div class="card p-4"><div class="text-2xl font-display font-bold">${deltaTag(tf.g30)}</div><div class="text-xs mt-1" style="color:var(--muted)">Groei 30 dagen</div></div>
+  </div>
+  <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4 mb-6">${accs.map(accountCard).join("")}</div>
+  <div class="card p-4 mb-6">
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+      <div class="text-sm font-medium mr-auto">Groei in de tijd</div>
+      <div class="seg">
+        <button class="${chartState.metric==='f'?'on':''}" onclick="chartState.metric='f';renderPage()">Volgers</button>
+        <button class="${chartState.metric==='s'?'on':''}" ${hasSubs?"":"disabled"} onclick="chartState.metric='s';renderPage()">Subs</button>
+      </div>
+      <div class="seg">
+        ${[[30,"30 d"],[90,"90 d"],[0,"Alles"]].map(([d,l])=>`<button class="${chartState.range===d?'on':''}" onclick="chartState.range=${d};renderPage()">${l}</button>`).join("")}
+      </div>
+      <select class="max-w-[190px]" onchange="chartState.acc=this.value;renderPage()">
+        <option value="">Alle accounts</option>${accs.map(a=>`<option value="${a.id}" ${chartState.acc===a.id?"selected":""}>${esc(accName(a))}</option>`).join("")}
+      </select>
+    </div>
+    ${socialChart()}
+  </div>
+  <div class="card p-4">
+    <div class="text-sm font-medium mb-3">Laatste metingen</div>
+    ${logs.length? `<div class="flex flex-col gap-1.5">${logs.map(logRow).join("")}</div>` : `<div class="text-sm" style="color:var(--muted)">Nog geen metingen. Klik op "Stand invoeren" om te beginnen.</div>`}
+  </div>`;
+}
+function accountCard(a){
+  const cfg=SOC[a.platform]||SOC.Anders, col=PLAT_COLOR[a.platform]||"#888";
+  const l=latest(a.id), fv=latestVal(a.id,"f"), sv=latestVal(a.id,"s");
+  const ago=l?daysBetween(l.date,dOff(0)):null;
+  const url=normUrl(a.url);
+  return `<div class="card p-4">
+    <div class="flex items-start justify-between gap-2 mb-3">
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:${col}"></span>
+        <div class="min-w-0">
+          <div class="font-medium text-sm">${esc(a.platform)}</div>
+          <div class="text-xs truncate" style="color:var(--muted)">${url?`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer" class="underline decoration-dotted">@${esc(a.handle||"profiel")}</a>`:(a.handle?"@"+esc(a.handle):"")}</div>
+        </div>
+      </div>
+      <button onclick="openAccountModal('${a.id}')" class="btn-ghost px-2.5 py-1 text-xs shrink-0">Bewerken</button>
+    </div>
+    <div class="flex items-end gap-5 flex-wrap">
+      <div><div class="text-2xl font-display font-bold">${fmtN(fv)}</div><div class="text-xs" style="color:var(--muted)">${cfg.f}</div></div>
+      ${cfg.s?`<div><div class="text-2xl font-display font-bold">${fmtN(sv)}</div><div class="text-xs" style="color:var(--muted)">${cfg.s}</div></div>`:""}
+    </div>
+    <div class="flex gap-4 text-xs mt-3" style="color:var(--muted)">
+      <span>7 d: ${deltaTag(growth(a.id,7,"f"))}</span><span>30 d: ${deltaTag(growth(a.id,30,"f"))}</span>
+      ${cfg.s?`<span>${cfg.s} 7 d: ${deltaTag(growth(a.id,7,"s"))}</span>`:""}
+    </div>
+    ${goalBar(cfg.f.toLowerCase(),fv,a.goalF,col)}
+    ${cfg.s?goalBar(cfg.s.toLowerCase(),sv,a.goalS,"var(--accent)"):""}
+    <div class="flex items-center justify-between mt-4">
+      <span class="text-xs" style="color:var(--muted)">${l?`Laatste meting ${fmtDate(l.date)}${ago>7?` (${ago} dagen geleden)`:""}`:"Nog geen meting"}</span>
+      <button onclick="openLogModal('${a.id}')" class="btn-acc px-3 py-1.5 text-xs">+ Stand</button>
+    </div>
+  </div>`;
+}
+function logRow(l){
+  const a=S.social.accounts.find(x=>x.id===l.acc); if(!a) return "";
+  const cfg=SOC[a.platform]||SOC.Anders, arr=accLogs(l.acc), i=arr.findIndex(x=>x.id===l.id), prev=i>0?arr[i-1]:null;
+  return `<div class="card2 px-3 py-2.5 flex items-center gap-3 cursor-pointer" onclick="openLogModal('${a.id}','${l.id}')">
+    <span class="w-2 h-2 rounded-full shrink-0" style="background:${PLAT_COLOR[a.platform]||'#888'}"></span>
+    <div class="min-w-0 flex-1">
+      <div class="text-sm font-medium truncate">${esc(accName(a))}</div>
+      <div class="text-xs" style="color:var(--muted)">${fmtDate(l.date)}</div>
+    </div>
+    <div class="text-right text-sm">
+      <div>${fmtN(l.f)} <span class="text-xs" style="color:var(--muted)">${cfg.f.toLowerCase()}</span> ${prev?`<span class="text-xs">${deltaTag(l.f-prev.f)}</span>`:""}</div>
+      ${l.s!=null&&cfg.s?`<div class="text-xs" style="color:var(--muted)">${fmtN(l.s)} ${cfg.s.toLowerCase()}</div>`:""}
+    </div>
+  </div>`;
+}
+function socialChart(){
+  const m=chartState.metric;
+  const accs=S.social.accounts.filter(a=>(!chartState.acc||a.id===chartState.acc)&&(m==="f"||SOC[a.platform].s));
+  const minDate=chartState.range?addDays(dOff(0),-chartState.range):"0000-00-00";
+  const series=accs.map(a=>({a,pts:accLogs(a.id).filter(l=>l[m]!=null&&l.date>=minDate)})).filter(s=>s.pts.length);
+  if(!series.length) return `<div class="empty p-8 text-center text-sm" style="color:var(--muted)">Nog geen metingen in deze periode.</div>`;
+  const W=640,H=260,L=58,R=18,T=14,B=30;
+  const all=series.flatMap(s=>s.pts);
+  const T_=p=>new Date(p.date+"T00:00:00").getTime();
+  const tMin=Math.min(...all.map(T_)), tMax=Math.max(...all.map(T_));
+  let vMin=Math.min(...all.map(p=>p[m])), vMax=Math.max(...all.map(p=>p[m]));
+  const span=(vMax-vMin)||Math.max(1,vMax*0.1), pad=span*0.2;
+  vMin=Math.max(0,Math.floor(vMin-pad)); vMax=Math.ceil(vMax+pad); if(vMax<=vMin) vMax=vMin+1;
+  const X=t=>tMax===tMin?(L+(W-L-R)/2):L+(t-tMin)/(tMax-tMin)*(W-L-R);
+  const Y=v=>T+(1-(v-vMin)/(vMax-vMin))*(H-T-B);
+  let grid="";
+  for(let i=0;i<4;i++){ const v=vMin+(vMax-vMin)*i/3, y=Y(v);
+    grid+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" style="stroke:var(--border)" stroke-width="1"/><text x="${L-8}" y="${y+4}" text-anchor="end" font-size="11" style="fill:var(--muted)">${fmtN(Math.round(v))}</text>`; }
+  let xl="";
+  const nx=tMax===tMin?1:4;
+  for(let i=0;i<nx;i++){ const t=nx===1?tMin:tMin+(tMax-tMin)*i/(nx-1);
+    xl+=`<text x="${X(t)}" y="${H-8}" text-anchor="${i===0&&nx>1?'start':i===nx-1&&nx>1?'end':'middle'}" font-size="11" style="fill:var(--muted)">${fmtDate(isoLocal(new Date(t)))}</text>`; }
+  const seen={}; let lines="", legend="";
+  series.forEach(s=>{
+    const p=s.a.platform; seen[p]=(seen[p]||0)+1; const col=PLAT_COLOR[p]||"#888", dash=seen[p]>1?'stroke-dasharray="5 4"':"";
+    const pts=s.pts.map(x=>`${X(T_(x)).toFixed(1)},${Y(x[m]).toFixed(1)}`).join(" ");
+    if(s.pts.length>1) lines+=`<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" ${dash}/>`;
+    lines+=s.pts.map(x=>`<circle cx="${X(T_(x)).toFixed(1)}" cy="${Y(x[m]).toFixed(1)}" r="3.5" fill="${col}"><title>${esc(accName(s.a))} · ${fmtDate(x.date)}: ${fmtN(x[m])}</title></circle>`).join("");
+    legend+=`<span class="flex items-center gap-1.5 text-xs" style="color:var(--muted)"><span class="w-2.5 h-2.5 rounded-full" style="background:${col}"></span>${esc(accName(s.a))}</span>`;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" class="w-full" role="img" aria-label="Grafiek van je ${m==='f'?'volgers':'subs'} over tijd">${grid}${xl}${lines}</svg>
+    <div class="flex flex-wrap gap-x-4 gap-y-1 mt-2">${legend}</div>`;
+}
+function openAccountModal(id){
+  const a=id?S.social.accounts.find(x=>x.id===id):{platform:S.profile.defPlatform,handle:S.profile.gebruikersnaam||"",url:"",goalF:"",goalS:""};
+  if(!a) return;
+  const cfg=SOC[a.platform]||SOC.Anders;
+  openModal(`
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-display text-lg font-bold">${id?"Account bewerken":"Account toevoegen"}</h3>
+      ${id?`<button onclick="askConfirm('Account verwijderen?','Het account en alle bijbehorende metingen worden verwijderd.','Verwijderen',()=>deleteAccount('${id}'))" class="text-xs" style="color:var(--danger)">Verwijderen</button>`:""}
+    </div>
+    <div class="flex flex-col gap-3">
+      <div class="grid grid-cols-2 gap-3">
+        <div><label>Platform</label><select id="ac_platform" onchange="accPlatformChanged()">${PLATFORMS.map(p=>`<option ${p===a.platform?"selected":""}>${p}</option>`).join("")}</select></div>
+        <div><label>Gebruikersnaam</label><input id="ac_handle" value="${esc(a.handle)}" placeholder="kassimnl" autocapitalize="none"></div>
+      </div>
+      <div><label>Link naar je profiel (optioneel)</label><input id="ac_url" value="${esc(a.url)}" placeholder="https://..." inputmode="url" autocapitalize="none"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label id="ac_gf_l">Doel ${cfg.f.toLowerCase()} (optioneel)</label><input id="ac_gf" type="number" min="0" inputmode="numeric" value="${esc(a.goalF||"")}"></div>
+        <div id="ac_gs_w" style="${cfg.s?"":"display:none"}"><label id="ac_gs_l">Doel ${(cfg.s||"subs").toLowerCase()} (optioneel)</label><input id="ac_gs" type="number" min="0" inputmode="numeric" value="${esc(a.goalS||"")}"></div>
+      </div>
+      ${id?"":`<div class="card2 p-3"><div class="text-xs mb-2" style="color:var(--muted)">Huidige stand (optioneel), dan begint je grafiek meteen.</div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label id="ac_cf_l">${cfg.f} nu</label><input id="ac_cf" type="number" min="0" inputmode="numeric"></div>
+          <div id="ac_cs_w" style="${cfg.s?"":"display:none"}"><label id="ac_cs_l">${cfg.s||"Subs"} nu</label><input id="ac_cs" type="number" min="0" inputmode="numeric"></div>
+        </div></div>`}
+      <div class="flex gap-2 mt-2">
+        <button onclick="saveAccount(${id?`'${id}'`:null})" class="btn-acc px-4 py-2 text-sm flex-1">Opslaan</button>
+        <button onclick="closeModal()" class="btn-ghost px-4 py-2 text-sm">Annuleren</button>
+      </div>
+    </div>`);
+}
+function accPlatformChanged(){
+  const cfg=SOC[$("ac_platform").value]||SOC.Anders;
+  $("ac_gf_l").textContent=`Doel ${cfg.f.toLowerCase()} (optioneel)`;
+  $("ac_gs_w").style.display=cfg.s?"":"none";
+  if(cfg.s) $("ac_gs_l").textContent=`Doel ${cfg.s.toLowerCase()} (optioneel)`;
+  if($("ac_cf_l")){ $("ac_cf_l").textContent=`${cfg.f} nu`; $("ac_cs_w").style.display=cfg.s?"":"none"; if(cfg.s) $("ac_cs_l").textContent=`${cfg.s} nu`; }
+}
+function numOrNull(v){ v=String(v).trim(); if(v==="") return null; const n=Number(v); return (isFinite(n)&&n>=0)?Math.round(n):NaN; }
+function saveAccount(id){
+  const platform=$("ac_platform").value, cfg=SOC[platform]||SOC.Anders;
+  const handle=$("ac_handle").value.trim().replace(/^@+/,"");
+  const rawUrl=$("ac_url").value.trim(), url=normUrl(rawUrl);
+  if(rawUrl&&!url) return toast("Deze profiellink is niet geldig","⚠️");
+  const gf=numOrNull($("ac_gf").value), gs=cfg.s?numOrNull($("ac_gs").value):null;
+  if(Number.isNaN(gf)||Number.isNaN(gs)) return toast("Vul bij een doel een positief getal in","⚠️");
+  let cf=null, cs=null;
+  if(!id){ cf=numOrNull($("ac_cf").value); cs=cfg.s?numOrNull($("ac_cs").value):null;
+    if(Number.isNaN(cf)||Number.isNaN(cs)) return toast("Vul bij de huidige stand een positief getal in","⚠️"); }
+  const data={platform,handle,url,goalF:gf||"",goalS:gs||""};
+  let accId=id;
+  if(id){ Object.assign(S.social.accounts.find(x=>x.id===id),data); toast("Account bijgewerkt"); }
+  else { accId=uid(); S.social.accounts.push({id:accId,...data}); toast("Account toegevoegd","📈"); if(cf!=null) S.social.logs.push({id:uid(),acc:accId,date:dOff(0),f:cf,s:cs}); }
+  save(); closeModal(); renderPage();
+}
+function deleteAccount(id){
+  S.social.accounts=S.social.accounts.filter(a=>a.id!==id);
+  S.social.logs=S.social.logs.filter(l=>l.acc!==id);
+  save(); toast("Account verwijderd","🗑️"); renderPage();
+}
+function openLogModal(accId,logId){
+  const accs=S.social.accounts; if(!accs.length){ route="socials"; render(); openAccountModal(); return; }
+  const log=logId?S.social.logs.find(l=>l.id===logId):null;
+  const sel=accId||(log&&log.acc)||chartState.acc||accs[0].id;
+  const a=accs.find(x=>x.id===sel)||accs[0], cfg=SOC[a.platform]||SOC.Anders;
+  const cur=log||{date:dOff(0),f:"",s:""};
+  openModal(`
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-display text-lg font-bold">${log?"Meting bewerken":"Stand invoeren"}</h3>
+      ${log?`<button onclick="askConfirm('Meting verwijderen?','Deze stand verdwijnt uit je grafiek.','Verwijderen',()=>deleteLog('${log.id}'))" class="text-xs" style="color:var(--danger)">Verwijderen</button>`:""}
+    </div>
+    <div class="flex flex-col gap-3">
+      <div><label>Account</label><select id="l_acc" onchange="logAccChanged()" ${log?"disabled":""}>${accs.map(x=>`<option value="${x.id}" ${x.id===a.id?"selected":""}>${esc(accName(x))}</option>`).join("")}</select></div>
+      <div><label>Datum</label><input type="date" id="l_date" value="${esc(cur.date)}" max="${dOff(0)}"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label id="l_f_l">${cfg.f}</label><input id="l_f" type="number" min="0" inputmode="numeric" value="${cur.f===""||cur.f==null?"":cur.f}"></div>
+        <div id="l_s_w" style="${cfg.s?"":"display:none"}"><label id="l_s_l">${cfg.s||"Subs"}</label><input id="l_s" type="number" min="0" inputmode="numeric" value="${cur.s==null?"":cur.s}"></div>
+      </div>
+      <p class="text-xs" style="color:var(--muted)">Voer de aantallen in zoals je ze in de app van het platform ziet. Bestaat er al een meting op deze datum, dan wordt die overschreven.</p>
+      <div class="flex gap-2 mt-1">
+        <button onclick="saveLog(${log?`'${log.id}'`:null})" class="btn-acc px-4 py-2 text-sm flex-1">Opslaan</button>
+        <button onclick="closeModal()" class="btn-ghost px-4 py-2 text-sm">Annuleren</button>
+      </div>
+    </div>`);
+}
+function logAccChanged(){
+  const a=S.social.accounts.find(x=>x.id===$("l_acc").value); const cfg=SOC[a.platform]||SOC.Anders;
+  $("l_f_l").textContent=cfg.f; $("l_s_w").style.display=cfg.s?"":"none"; if(cfg.s) $("l_s_l").textContent=cfg.s;
+}
+function saveLog(logId){
+  const acc=$("l_acc").value, date=$("l_date").value, a=S.social.accounts.find(x=>x.id===acc); if(!a) return;
+  const cfg=SOC[a.platform]||SOC.Anders;
+  const f=numOrNull($("l_f").value), s=cfg.s?numOrNull($("l_s").value):null;
+  if(f==null||Number.isNaN(f)) return toast(`Vul het aantal ${cfg.f.toLowerCase()} in`,"⚠️");
+  if(Number.isNaN(s)) return toast("Vul bij subs een positief getal in","⚠️");
+  if(!date) return toast("Kies een datum","⚠️");
+  if(logId){ Object.assign(S.social.logs.find(l=>l.id===logId),{date,f,s}); toast("Meting bijgewerkt"); }
+  else {
+    const ex=S.social.logs.find(l=>l.acc===acc&&l.date===date);
+    if(ex){ Object.assign(ex,{f,s}); toast("Meting van die dag bijgewerkt"); }
+    else { S.social.logs.push({id:uid(),acc,date,f,s}); toast("Stand opgeslagen","📈"); }
+  }
+  save(); closeModal(); renderPage();
+}
+function deleteLog(id){ S.social.logs=S.social.logs.filter(l=>l.id!==id); save(); toast("Meting verwijderd","🗑️"); renderPage(); }
+
+/* ================= FAVORIETEN ================= */
+function pageFav(){
+  const fc=S.content.filter(c=>c.fav), fi=S.ideas.filter(i=>i.fav), fm=S.myContent.filter(m=>m.fav);
+  const tabs=[["content","Content Board"],["ideas","Ideeën"],["mine","Mijn Content"]];
+  return `
+  <h1 class="font-display text-2xl font-bold mb-5">❤️ Favorieten</h1>
+  <div class="flex gap-2 mb-5 flex-wrap">
+    ${tabs.map(([t,l])=>`<button onclick="favTab='${t}'; renderPage();" class="${favTab===t?'btn-acc':'btn-ghost'} px-4 py-2 text-sm">${l}</button>`).join("")}
+  </div>
+  ${favTab==="content" ? (fc.length?`<div class="flex flex-col gap-2">${fc.map(contentRow).join("")}</div>`:emptyState("Nog geen favoriete content","Vink ❤️ Favoriet aan in een content-item.",null,null)) : ""}
+  ${favTab==="ideas" ? (fi.length?`<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">${fi.map(ideaCard).join("")}</div>`:emptyState("Nog geen favoriete ideeën","Markeer ideeën als favoriet.",null,null)) : ""}
+  ${favTab==="mine" ? (fm.length?`<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">${fm.map(myContentCard).join("")}</div>`:emptyState("Nog geen favoriete content","Markeer items in Mijn Content als favoriet.",null,null)) : ""}`;
+}
+
+/* ================= STATISTIEKEN ================= */
+function pageStats(){
+  const total=S.content.length;
+  const byPlat={}; PLATFORMS.forEach(p=>byPlat[p]=S.content.filter(c=>c.platform===p).length);
+  const maxPlat=Math.max(1,...Object.values(byPlat));
+  const stageCounts={}; STAGES.forEach(([k])=>stageCounts[k]=S.content.filter(c=>c.stage===k).length);
+  return `
+  <h1 class="font-display text-2xl font-bold mb-5">📊 Statistieken</h1>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+    <div class="card p-4"><div class="text-2xl font-display font-bold">${total}</div><div class="text-xs" style="color:var(--muted)">Totaal content</div></div>
+    <div class="card p-4"><div class="text-2xl font-display font-bold">${S.ideas.length}</div><div class="text-xs" style="color:var(--muted)">Ideeën</div></div>
+    <div class="card p-4"><div class="text-2xl font-display font-bold">${stageCounts["gepubliceerd"]}</div><div class="text-xs" style="color:var(--muted)">Gepubliceerd</div></div>
+    <div class="card p-4"><div class="text-2xl font-display font-bold">${S.myContent.length}</div><div class="text-xs" style="color:var(--muted)">In Mijn Content</div></div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-5">
+    <div class="card p-4">
+      <div class="text-sm font-medium mb-4">Content per platform</div>
+      <div class="flex flex-col gap-2.5">
+        ${PLATFORMS.map(p=>`<div>
+          <div class="flex justify-between text-xs mb-1"><span>${p}</span><span style="color:var(--muted)">${byPlat[p]}</span></div>
+          <div class="bar"><div style="width:${byPlat[p]/maxPlat*100}%; background:${PLAT_COLOR[p]}"></div></div>
+        </div>`).join("")}
+      </div>
+    </div>
+    <div class="card p-4">
+      <div class="text-sm font-medium mb-4">Content per status</div>
+      <div class="flex flex-col gap-2.5">
+        ${STAGES.map(([k,l])=>`<div>
+          <div class="flex justify-between text-xs mb-1"><span>${l}</span><span style="color:var(--muted)">${stageCounts[k]}</span></div>
+          <div class="bar"><div style="width:${total?stageCounts[k]/total*100:0}%; background:var(--accent)"></div></div>
+        </div>`).join("")}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ================= INSTELLINGEN ================= */
+function pageSettings(){
+  return `
+  <h1 class="font-display text-2xl font-bold mb-5">⚙️ Instellingen</h1>
+  <div class="grid md:grid-cols-2 gap-5 max-w-4xl">
+    <div class="card p-4">
+      <div class="font-medium mb-3 text-sm">Profiel</div>
+      <div class="flex flex-col gap-3">
+        <div><label>Naam</label><input id="set_naam" value="${esc(S.profile.naam)}"></div>
+        <div><label>Gebruikersnaam op social media</label><input id="set_gebruikersnaam" value="${esc(S.profile.gebruikersnaam)}" autocapitalize="none"></div>
+        <button onclick="saveProfile()" class="btn-acc px-4 py-2 text-sm">Opslaan</button>
+      </div>
+    </div>
+    <div class="card p-4">
+      <div class="font-medium mb-3 text-sm">Content standaarden</div>
+      <div class="flex flex-col gap-3">
+        <div><label>Standaard platform</label><select id="set_defplat">${PLATFORMS.map(p=>`<option ${p===S.profile.defPlatform?"selected":""}>${p}</option>`).join("")}</select></div>
+        <div><label>Standaard contenttype</label><select id="set_deftype">${TYPES.map(t=>`<option ${t===S.profile.defType?"selected":""}>${t}</option>`).join("")}</select></div>
+        <button onclick="saveProfile()" class="btn-acc px-4 py-2 text-sm">Opslaan</button>
+      </div>
+    </div>
+    <div class="card p-4">
+      <div class="font-medium mb-1 text-sm">Wachtwoord wijzigen</div>
+      <div class="flex flex-col gap-3 mt-3">
+        <div><label for="pw_old">Huidig wachtwoord</label><input id="pw_old" type="password" autocomplete="current-password"></div>
+        <div><label for="pw_new">Nieuw wachtwoord</label><input id="pw_new" type="password" autocomplete="new-password" placeholder="Minimaal 8 tekens"></div>
+        <div><label for="pw_new2">Herhaal nieuw wachtwoord</label><input id="pw_new2" type="password" autocomplete="new-password"></div>
+        <button onclick="changePw()" class="btn-ghost px-4 py-2 text-sm">Wachtwoord wijzigen</button>
+      </div>
+    </div>
+    <div class="flex flex-col gap-5">
+      <div class="card p-4">
+        <div class="font-medium mb-1 text-sm">Gegevens</div>
+        <p class="text-xs mb-3" style="color:var(--muted)">Je gegevens staan alleen in deze browser. Maak regelmatig een back-up.</p>
+        <div class="flex flex-col gap-2">
+          <button onclick="exportData()" class="btn-ghost px-4 py-2 text-sm text-left">⬇ Back-up maken (export)</button>
+          <button onclick="$('imp').click()" class="btn-ghost px-4 py-2 text-sm text-left">⬆ Back-up terugzetten (import)</button>
+          <input type="file" id="imp" accept="application/json,.json" class="hidden" onchange="importFile(this)">
+          <button onclick="askConfirm('Alle gegevens wissen?','Je content, ideeën, Mijn Content en tracker worden verwijderd. Je account blijft bestaan.','Alles wissen',wipeData)" class="btn-ghost px-4 py-2 text-sm text-left" style="color:var(--danger)">🗑 Alle gegevens wissen</button>
+        </div>
+      </div>
+      <div class="card p-4">
+        <div class="font-medium mb-1 text-sm">Account</div>
+        <p class="text-xs mb-3" style="color:var(--muted)">Ingelogd als <b style="color:var(--text)">${esc(CUR)}</b>.</p>
+        <div class="flex flex-col gap-2">
+          <button onclick="logout()" class="btn-ghost px-4 py-2 text-sm text-left">Uitloggen</button>
+          <button onclick="askConfirm('Account verwijderen?','Je account en alle bijbehorende gegevens worden definitief van dit apparaat verwijderd.','Account verwijderen',deleteAccountData)" class="btn-ghost px-4 py-2 text-sm text-left" style="color:var(--danger)">Account verwijderen</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function saveProfile(){
+  S.profile.naam=$("set_naam").value.trim()||CUR;
+  S.profile.gebruikersnaam=($("set_gebruikersnaam").value.trim().replace(/^@+/,""))||CUR;
+  S.profile.defPlatform=$("set_defplat").value;
+  S.profile.defType=$("set_deftype").value;
+  save(); toast("Instellingen opgeslagen"); render();
+}
+async function changePw(){
+  const o=$("pw_old").value, n=$("pw_new").value, n2=$("pw_new2").value;
+  if(!(window.crypto&&crypto.subtle)) return toast("Wachtwoord wijzigen werkt niet in deze browser","⚠️");
+  const users=getUsers(), u=users[CUR]; if(!u) return;
+  if(!o||!n) return toast("Vul alle velden in","⚠️");
+  if((await hashPw(o,u.salt))!==u.hash) return toast("Je huidige wachtwoord klopt niet","⚠️");
+  if(n.length<8) return toast("Je nieuwe wachtwoord moet minimaal 8 tekens hebben","⚠️");
+  if(n!==n2) return toast("De nieuwe wachtwoorden zijn niet hetzelfde","⚠️");
+  const salt=newSalt(); users[CUR]={...u,salt,hash:await hashPw(n,salt)}; putUsers(users);
+  ["pw_old","pw_new","pw_new2"].forEach(i=>{ const e=$(i); if(e) e.value=""; });
+  toast("Wachtwoord gewijzigd","🔒");
+}
+function wipeData(){ S=newData(S.profile.naam,S.profile.gebruikersnaam); S.profile.defPlatform="TikTok"; save(); toast("Alle gegevens gewist","🗑️"); route="dashboard"; render(); }
+function deleteAccountData(){
+  const users=getUsers(); delete users[CUR]; putUsers(users); store.del(DATA_PREFIX+CUR);
+  logout(); toast("Account verwijderd","🗑️");
+}
+async function exportData(){
+  const json=JSON.stringify(S,null,2);
+  let dl=null; try{ dl=(window.claude&&window.claude.use)? await window.claude.use("downloads") : null; }catch(e){}
+  if(dl){
+    try{ await dl.save({filename:"kassimnl-studio-back-up.json",data:json}); toast("Back-up gemaakt","⬇️"); }
+    catch(e){ if(!e||e.code!=="declined") toast("De back-up kon niet worden opgeslagen","⚠️"); }
+  } else {
+    openModal(`<h3 class="font-display text-lg font-bold mb-2">Back-up</h3>
+      <p class="text-sm mb-3" style="color:var(--muted)">Downloaden kan hier niet. Kopieer de tekst hieronder en bewaar hem in een bestand met de naam .json.</p>
+      <textarea id="exp_txt" rows="10" readonly onclick="this.select()">${esc(json)}</textarea>
+      <button onclick="$('exp_txt').select(); try{document.execCommand('copy'); toast('Gekopieerd','📋');}catch(e){}" class="btn-acc px-4 py-2 text-sm mt-3 w-full">Kopiëren</button>`);
+  }
+}
+function cleanId(x,used){ let id=String(x||"").replace(/[^a-z0-9_-]/gi,"").slice(0,24); if(!id||used.has(id)) id=uid(); used.add(id); return id; }
+function mergeImport(d){
+  if(!d||typeof d!=="object") throw new Error("bad");
+  const used=new Set([...S.ideas,...S.content,...S.myContent,...S.social.accounts,...S.social.logs].map(x=>x.id));
+  const str=(v,m=500)=>String(v==null?"":v).slice(0,m);
+  const dt=s=>/^\d{4}-\d{2}-\d{2}$/.test(s)?s:dOff(0);
+  const plat=p=>PLATFORMS.includes(p)?p:"Anders", typ=t=>TYPES.includes(t)?t:TYPES[0];
+  let n=0;
+  (Array.isArray(d.ideas)?d.ideas:[]).forEach(i=>{ S.ideas.push({id:cleanId(i.id,used),title:str(i.title,120)||"Zonder titel",desc:str(i.desc),platform:plat(i.platform),type:typ(i.type),tags:Array.isArray(i.tags)?i.tags.slice(0,10).map(t=>str(t,30)):[],created:dt(i.created),fav:!!i.fav}); n++; });
+  (Array.isArray(d.content)?d.content:[]).forEach(c=>{ S.content.push({id:cleanId(c.id,used),title:str(c.title,120)||"Zonder titel",platform:plat(c.platform),type:typ(c.type),stage:STAGES.some(s=>s[0]===c.stage)?c.stage:"idee",desc:str(c.desc),caption:str(c.caption),hashtags:str(c.hashtags),date:dt(c.date),time:/^\d{2}:\d{2}$/.test(c.time)?c.time:"12:00",notes:str(c.notes),fav:!!c.fav}); n++; });
+  (Array.isArray(d.myContent)?d.myContent:[]).forEach(m=>{ S.myContent.push({id:cleanId(m.id,used),title:str(m.title,120)||"Zonder titel",platform:plat(m.platform),type:typ(m.type),url:normUrl(m.url),notes:str(m.notes),thumb:(typeof m.thumb==="string"&&m.thumb.startsWith("data:image/"))?m.thumb:null,created:dt(m.created),fav:!!m.fav}); n++; });
+  const map={};
+  const soc=d.social||{};
+  (Array.isArray(soc.accounts)?soc.accounts:[]).forEach(a=>{ const id=cleanId(a.id,used); map[a.id]=id; S.social.accounts.push({id,platform:plat(a.platform),handle:str(a.handle,40),url:normUrl(a.url),goalF:Number(a.goalF)||"",goalS:Number(a.goalS)||""}); n++; });
+  (Array.isArray(soc.logs)?soc.logs:[]).forEach(l=>{ if(!map[l.acc]) return; const f=Number(l.f); if(!isFinite(f)||f<0) return; const s=(l.s==null||l.s==="")?null:Number(l.s);
+    S.social.logs.push({id:cleanId(l.id,used),acc:map[l.acc],date:dt(l.date),f:Math.round(f),s:(s!=null&&isFinite(s)&&s>=0)?Math.round(s):null}); n++; });
+  return n;
+}
+function importFile(inp){
+  const f=inp.files[0]; if(!f) return;
+  const fr=new FileReader();
+  fr.onload=()=>{ try{ const n=mergeImport(JSON.parse(fr.result)); save(); toast(`${n} items teruggezet`,"⬆️"); renderPage(); }
+    catch(e){ toast("Dit bestand kan niet worden gelezen","⚠️"); } inp.value=""; };
+  fr.readAsText(f);
+}
+
+/* ================= START ================= */
+(function boot(){
+  const k=store.get(SESSION_KEY)||store.get(SESSION_KEY,true);
+  if(k && getUsers()[k]) enterApp(k); else renderAuth("login");
+})();
+</script>
+</body>
+</html>
